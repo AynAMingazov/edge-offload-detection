@@ -1,6 +1,6 @@
 # edge-offload-detection
 
-On-board or roadside server: where should a vehicle run its object detector?
+On board or at the roadside? Accuracy and latency of offloaded object detection for connected vehicles under frame compression and low light.
 
 This repository has the code and all raw measurements for the paper by A. Mingazov and A. Andrianova (Kazan Federal University, 2026). We compare a light YOLO model on a weak on-board computer with a heavier model on an edge server that receives a JPEG-compressed frame. Both daylight and simulated low light are tested.
 
@@ -26,8 +26,8 @@ This repository has the code and all raw measurements for the paper by A. Mingaz
 - Server YOLO11s (8 threads) plus transmission is not slower than on-board YOLO11n with one thread when the uplink provides about 20 Mbit/s in daylight and 16 Mbit/s at night. An on-board computer with two threads is always faster in this configuration.
 - One 8-thread CPU server runs YOLO11s at about 23 frames per second, which is only two vehicles at 10 fps. A single roadside computer without an accelerator is not enough.
 
-![accuracy vs frame size](fig/fig1_acc_vs_size.png)
-![latency vs bandwidth](fig/fig2_latency_vs_bw.png)
+![accuracy vs frame size](fig/fig1_acc_vs_size_en.png)
+![latency vs bandwidth](fig/fig2_latency_vs_bw_en.png)
 
 ## Files
 - `prep.py`: selects the images, builds the low-light copies and all JPEG variants, records sizes and encode / decode times.
