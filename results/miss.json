@@ -1,0 +1,452 @@
+{
+ "coco_day|board_n_fp32": {
+  "person": {
+   "small": [
+    300,
+    822
+   ],
+   "large": [
+    946,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    116,
+    238
+   ],
+   "large": [
+    47,
+    56
+   ]
+  },
+  "fp_person": 271,
+  "fp_car": 56,
+  "images": 500
+ },
+ "coco_day|board_n_int8": {
+  "person": {
+   "small": [
+    310,
+    822
+   ],
+   "large": [
+    943,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    110,
+    238
+   ],
+   "large": [
+    43,
+    56
+   ]
+  },
+  "fp_person": 285,
+  "fp_car": 58,
+  "images": 500
+ },
+ "coco_day|board_s_int8": {
+  "person": {
+   "small": [
+    417,
+    822
+   ],
+   "large": [
+    979,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    130,
+    238
+   ],
+   "large": [
+    48,
+    56
+   ]
+  },
+  "fp_person": 310,
+  "fp_car": 48,
+  "images": 500
+ },
+ "coco_day|road_s_q70": {
+  "person": {
+   "small": [
+    332,
+    822
+   ],
+   "large": [
+    972,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    130,
+    238
+   ],
+   "large": [
+    51,
+    56
+   ]
+  },
+  "fp_person": 228,
+  "fp_car": 45,
+  "images": 500
+ },
+ "coco_day|road_s_q90": {
+  "person": {
+   "small": [
+    363,
+    822
+   ],
+   "large": [
+    977,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    130,
+    238
+   ],
+   "large": [
+    49,
+    56
+   ]
+  },
+  "fp_person": 240,
+  "fp_car": 51,
+  "images": 500
+ },
+ "coco_day|road_m_q90": {
+  "person": {
+   "small": [
+    399,
+    822
+   ],
+   "large": [
+    993,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    141,
+    238
+   ],
+   "large": [
+    52,
+    56
+   ]
+  },
+  "fp_person": 244,
+  "fp_car": 54,
+  "images": 500
+ },
+ "coco_night|board_n_fp32": {
+  "person": {
+   "small": [
+    157,
+    822
+   ],
+   "large": [
+    767,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    67,
+    238
+   ],
+   "large": [
+    36,
+    56
+   ]
+  },
+  "fp_person": 185,
+  "fp_car": 28,
+  "images": 500
+ },
+ "coco_night|board_n_int8": {
+  "person": {
+   "small": [
+    163,
+    822
+   ],
+   "large": [
+    763,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    67,
+    238
+   ],
+   "large": [
+    37,
+    56
+   ]
+  },
+  "fp_person": 173,
+  "fp_car": 30,
+  "images": 500
+ },
+ "coco_night|board_s_int8": {
+  "person": {
+   "small": [
+    247,
+    822
+   ],
+   "large": [
+    884,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    86,
+    238
+   ],
+   "large": [
+    43,
+    56
+   ]
+  },
+  "fp_person": 281,
+  "fp_car": 45,
+  "images": 500
+ },
+ "coco_night|road_s_q70": {
+  "person": {
+   "small": [
+    194,
+    822
+   ],
+   "large": [
+    834,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    83,
+    238
+   ],
+   "large": [
+    43,
+    56
+   ]
+  },
+  "fp_person": 191,
+  "fp_car": 31,
+  "images": 500
+ },
+ "coco_night|road_s_q90": {
+  "person": {
+   "small": [
+    230,
+    822
+   ],
+   "large": [
+    857,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    86,
+    238
+   ],
+   "large": [
+    43,
+    56
+   ]
+  },
+  "fp_person": 268,
+  "fp_car": 42,
+  "images": 500
+ },
+ "coco_night|road_m_q90": {
+  "person": {
+   "small": [
+    265,
+    822
+   ],
+   "large": [
+    894,
+    1099
+   ]
+  },
+  "car": {
+   "small": [
+    105,
+    238
+   ],
+   "large": [
+    47,
+    56
+   ]
+  },
+  "fp_person": 196,
+  "fp_car": 43,
+  "images": 500
+ },
+ "exdark|board_n_fp32": {
+  "person": {
+   "small": [
+    224,
+    654
+   ],
+   "large": [
+    1258,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    233,
+    485
+   ],
+   "large": [
+    346,
+    434
+   ]
+  },
+  "fp_person": 378,
+  "fp_car": 207,
+  "images": 1096
+ },
+ "exdark|board_n_int8": {
+  "person": {
+   "small": [
+    225,
+    654
+   ],
+   "large": [
+    1251,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    232,
+    485
+   ],
+   "large": [
+    345,
+    434
+   ]
+  },
+  "fp_person": 410,
+  "fp_car": 201,
+  "images": 1096
+ },
+ "exdark|board_s_int8": {
+  "person": {
+   "small": [
+    309,
+    654
+   ],
+   "large": [
+    1348,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    299,
+    485
+   ],
+   "large": [
+    365,
+    434
+   ]
+  },
+  "fp_person": 524,
+  "fp_car": 284,
+  "images": 1096
+ },
+ "exdark|road_s_q70": {
+  "person": {
+   "small": [
+    216,
+    654
+   ],
+   "large": [
+    1249,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    250,
+    485
+   ],
+   "large": [
+    358,
+    434
+   ]
+  },
+  "fp_person": 331,
+  "fp_car": 213,
+  "images": 1096
+ },
+ "exdark|road_s_q90": {
+  "person": {
+   "small": [
+    257,
+    654
+   ],
+   "large": [
+    1318,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    286,
+    485
+   ],
+   "large": [
+    366,
+    434
+   ]
+  },
+  "fp_person": 394,
+  "fp_car": 236,
+  "images": 1096
+ },
+ "exdark|road_m_q90": {
+  "person": {
+   "small": [
+    284,
+    654
+   ],
+   "large": [
+    1333,
+    1581
+   ]
+  },
+  "car": {
+   "small": [
+    308,
+    485
+   ],
+   "large": [
+    374,
+    434
+   ]
+  },
+  "fp_person": 390,
+  "fp_car": 253,
+  "images": 1096
+ }
+}

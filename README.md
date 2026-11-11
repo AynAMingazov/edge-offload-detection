@@ -1,6 +1,6 @@
 # edge-offload-detection
 
-On board or at the roadside? Accuracy and latency of offloaded object detection for connected vehicles under frame compression and low light.
+Distributing video processing between the vehicle and road infrastructure in an intelligent transport system (ITS).
 
 This repository has the code and all raw measurements for the paper by A. Mingazov and A. Andrianova (Kazan Federal University, 2026). A vehicle can run a light detector on its own computer or send a JPEG-compressed frame to a roadside unit with a heavier model. We measure what each choice costs in accuracy and latency, in daylight and in low light, with FP32 and INT8 models, on a CPU without a GPU.
 
@@ -25,6 +25,7 @@ This repository has the code and all raw measurements for the paper by A. Mingaz
 - Low light reduces accuracy of every model by 19-26 % and makes JPEG compression about twice as harmful. On real ExDark images YOLO11m loses 10 % at quality 70 and 40 % at quality 30.
 - Under a limited uplink at night, reduce resolution, not quality: on ExDark, 320 px at quality 70 (7.4 KB) gives 0.336, while 640 px at quality 10 (7.0 KB) gives 0.056.
 - INT8 speeds the models up by 2.3-3.0 times and costs at most 0.015 mAP. Quantised YOLO11s on two on-board cores is more accurate than offloading the same model and does not depend on the link.
+- Missed pedestrians (confidence 0.25, IoU 0.5) on real dark images: on-board YOLO11n 33.7 %, roadside YOLO11s at JPEG 70 34.5 %, roadside YOLO11m at JPEG 90 27.7 %, quantised on-board YOLO11s 25.9 %. Far pedestrians (box below 64 px) are missed two to three times more often than near ones.
 - Offloading pays off only to a substantially heavier model (YOLO11m class), which needs an accelerator. An 8-thread CPU unit runs YOLO11s at about 23 fps in FP32 and 46 fps in INT8, enough for two or four vehicles at 10 fps.
 
 ![accuracy vs latency](fig/fig3_acc_vs_latency_en.png)
@@ -36,6 +37,7 @@ This repository has the code and all raw measurements for the paper by A. Mingaz
 - `run_acc.py`, `run_time.py <threads>`: accuracy (48 runs) and latency of the PyTorch models.
 - `exdark.py prep <img_dir> <gt_dir> <imageclasslist.txt>` and `exdark.py acc`: ExDark test set and its 24 accuracy runs.
 - `quant.py calib | export | acc | time <threads>`: calibration set, OpenVINO FP32 / INT8 export, accuracy and latency.
+- `miss.py`: share of missed pedestrians and cars by object size, `results/miss.json`.
 - `analyze.py`, `fig3.py`: tables, break-even bandwidth and figures.
 - `results/`: all raw measurements in JSON.
 
@@ -50,7 +52,7 @@ python quant.py calib && python quant.py export && python quant.py acc
 for t in 1 2 4 8; do python quant.py time $t; done
 # ExDark: https://github.com/cs-chan/Exclusively-Dark-Image-Dataset (images and annotations)
 python exdark.py prep <ExDark images> <ExDark_Annno> <imageclasslist.txt> && python exdark.py acc
-python analyze.py && python fig3.py
+python analyze.py && python fig3.py && python miss.py
 ```
 
 ## Limitations
