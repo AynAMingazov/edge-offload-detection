@@ -1,0 +1,5 @@
+torch
+ultralytics>=8.4
+opencv-python
+numpy
+matplotlib

@@ -1,0 +1,242 @@
+{
+ "yolo11n|640|1": {
+  "total_ms_median": 64.35025000018868,
+  "total_ms_p90": 73.92949999957638,
+  "inference_ms_median": 62.35014999992927,
+  "threads_seen": 1
+ },
+ "yolo11n|480|1": {
+  "total_ms_median": 40.27445000019725,
+  "total_ms_p90": 45.03889000052368,
+  "inference_ms_median": 38.43049999977666,
+  "threads_seen": 1
+ },
+ "yolo11n|320|1": {
+  "total_ms_median": 21.795799999836163,
+  "total_ms_p90": 23.935150000579597,
+  "inference_ms_median": 20.450099999834492,
+  "threads_seen": 1
+ },
+ "yolov8n|640|1": {
+  "total_ms_median": 73.99404999932813,
+  "total_ms_p90": 85.75609000045009,
+  "inference_ms_median": 71.80549999975483,
+  "threads_seen": 1
+ },
+ "yolo11s|640|1": {
+  "total_ms_median": 177.21400000027643,
+  "total_ms_p90": 194.9429399996007,
+  "inference_ms_median": 175.1672000000326,
+  "threads_seen": 1
+ },
+ "yolo11s|480|1": {
+  "total_ms_median": 110.50855000030424,
+  "total_ms_p90": 115.37880000014418,
+  "inference_ms_median": 108.62244999998438,
+  "threads_seen": 1
+ },
+ "yolo11s|320|1": {
+  "total_ms_median": 53.41354999973191,
+  "total_ms_p90": 58.21121999988465,
+  "inference_ms_median": 52.066849999846454,
+  "threads_seen": 1
+ },
+ "yolo11m|640|1": {
+  "total_ms_median": 936.4662500001941,
+  "total_ms_p90": 1230.7957400000307,
+  "inference_ms_median": 932.4968999999328,
+  "threads_seen": 1
+ },
+ "yolo11m|480|1": {
+  "total_ms_median": 453.1637000000046,
+  "total_ms_p90": 623.7935200000721,
+  "inference_ms_median": 450.8552000002055,
+  "threads_seen": 1
+ },
+ "yolo11m|320|1": {
+  "total_ms_median": 151.0950000001685,
+  "total_ms_p90": 156.99468999982855,
+  "inference_ms_median": 149.22814999954426,
+  "threads_seen": 1
+ },
+ "yolo11n|640|2": {
+  "total_ms_median": 37.0751499999642,
+  "total_ms_p90": 49.32786000017587,
+  "inference_ms_median": 35.594099999798345,
+  "threads_seen": 2
+ },
+ "yolo11n|480|2": {
+  "total_ms_median": 25.69485000003624,
+  "total_ms_p90": 31.627040000512366,
+  "inference_ms_median": 24.091949999728968,
+  "threads_seen": 2
+ },
+ "yolo11n|320|2": {
+  "total_ms_median": 15.286649999779911,
+  "total_ms_p90": 18.02685999991809,
+  "inference_ms_median": 14.21184999981051,
+  "threads_seen": 2
+ },
+ "yolov8n|640|2": {
+  "total_ms_median": 40.60479999952804,
+  "total_ms_p90": 53.234370000063805,
+  "inference_ms_median": 38.98369999978968,
+  "threads_seen": 2
+ },
+ "yolo11s|640|2": {
+  "total_ms_median": 93.26835000001665,
+  "total_ms_p90": 113.17301000053709,
+  "inference_ms_median": 91.74059999986639,
+  "threads_seen": 2
+ },
+ "yolo11s|480|2": {
+  "total_ms_median": 60.52769999996599,
+  "total_ms_p90": 67.99017999965149,
+  "inference_ms_median": 58.86820000023363,
+  "threads_seen": 2
+ },
+ "yolo11s|320|2": {
+  "total_ms_median": 33.708649999880436,
+  "total_ms_p90": 39.540410000245174,
+  "inference_ms_median": 32.48319999966043,
+  "threads_seen": 2
+ },
+ "yolo11m|640|2": {
+  "total_ms_median": 435.8007499999985,
+  "total_ms_p90": 582.4903699994138,
+  "inference_ms_median": 433.9775000003101,
+  "threads_seen": 2
+ },
+ "yolo11m|480|2": {
+  "total_ms_median": 209.43130000023302,
+  "total_ms_p90": 300.900140000158,
+  "inference_ms_median": 207.70305000041844,
+  "threads_seen": 2
+ },
+ "yolo11m|320|2": {
+  "total_ms_median": 81.21640000035768,
+  "total_ms_p90": 89.22384000024977,
+  "inference_ms_median": 79.9888500000634,
+  "threads_seen": 2
+ },
+ "yolo11n|640|4": {
+  "total_ms_median": 24.999649999699614,
+  "total_ms_p90": 38.58494000023712,
+  "inference_ms_median": 23.71225000024424,
+  "threads_seen": 4
+ },
+ "yolo11n|480|4": {
+  "total_ms_median": 18.416099999285507,
+  "total_ms_p90": 22.762899999816053,
+  "inference_ms_median": 16.95140000038009,
+  "threads_seen": 4
+ },
+ "yolo11n|320|4": {
+  "total_ms_median": 12.553100000332051,
+  "total_ms_p90": 13.891170000169954,
+  "inference_ms_median": 11.418600000524748,
+  "threads_seen": 4
+ },
+ "yolov8n|640|4": {
+  "total_ms_median": 25.378449999607255,
+  "total_ms_p90": 35.888850000173996,
+  "inference_ms_median": 24.015699999836215,
+  "threads_seen": 4
+ },
+ "yolo11s|640|4": {
+  "total_ms_median": 53.69570000038948,
+  "total_ms_p90": 68.58131000026334,
+  "inference_ms_median": 52.389250000032916,
+  "threads_seen": 4
+ },
+ "yolo11s|480|4": {
+  "total_ms_median": 36.57894999969358,
+  "total_ms_p90": 45.670800000698364,
+  "inference_ms_median": 35.121649999837246,
+  "threads_seen": 4
+ },
+ "yolo11s|320|4": {
+  "total_ms_median": 22.717650000231515,
+  "total_ms_p90": 25.395179999941323,
+  "inference_ms_median": 21.583749999990687,
+  "threads_seen": 4
+ },
+ "yolo11m|640|4": {
+  "total_ms_median": 188.5986000002049,
+  "total_ms_p90": 245.03156999990117,
+  "inference_ms_median": 187.1746499996334,
+  "threads_seen": 4
+ },
+ "yolo11m|480|4": {
+  "total_ms_median": 111.07300000003306,
+  "total_ms_p90": 137.60701000046538,
+  "inference_ms_median": 109.62065000012444,
+  "threads_seen": 4
+ },
+ "yolo11m|320|4": {
+  "total_ms_median": 50.95434999975623,
+  "total_ms_p90": 58.85586999947919,
+  "inference_ms_median": 49.78114999948957,
+  "threads_seen": 4
+ },
+ "yolo11n|640|8": {
+  "total_ms_median": 20.318199999564968,
+  "total_ms_p90": 26.96254999991653,
+  "inference_ms_median": 19.039299999803916,
+  "threads_seen": 8
+ },
+ "yolo11n|480|8": {
+  "total_ms_median": 15.520400000241352,
+  "total_ms_p90": 19.45999999934429,
+  "inference_ms_median": 14.123399999789399,
+  "threads_seen": 8
+ },
+ "yolo11n|320|8": {
+  "total_ms_median": 11.199449999821809,
+  "total_ms_p90": 13.229260000025537,
+  "inference_ms_median": 10.071950000110519,
+  "threads_seen": 8
+ },
+ "yolov8n|640|8": {
+  "total_ms_median": 21.469750000505883,
+  "total_ms_p90": 29.46832999987238,
+  "inference_ms_median": 19.939350000186096,
+  "threads_seen": 8
+ },
+ "yolo11s|640|8": {
+  "total_ms_median": 43.50449999992634,
+  "total_ms_p90": 55.4101499998069,
+  "inference_ms_median": 42.114500000025146,
+  "threads_seen": 8
+ },
+ "yolo11s|480|8": {
+  "total_ms_median": 30.34464999973352,
+  "total_ms_p90": 36.480820000269894,
+  "inference_ms_median": 28.978150000057212,
+  "threads_seen": 8
+ },
+ "yolo11s|320|8": {
+  "total_ms_median": 18.31880000008823,
+  "total_ms_p90": 21.60468000020046,
+  "inference_ms_median": 17.1383999995669,
+  "threads_seen": 8
+ },
+ "yolo11m|640|8": {
+  "total_ms_median": 150.77854999981355,
+  "total_ms_p90": 187.31701999986402,
+  "inference_ms_median": 149.05815000020084,
+  "threads_seen": 8
+ },
+ "yolo11m|480|8": {
+  "total_ms_median": 82.26914999977453,
+  "total_ms_p90": 101.99829999983194,
+  "inference_ms_median": 80.62560000007579,
+  "threads_seen": 8
+ },
+ "yolo11m|320|8": {
+  "total_ms_median": 40.007250000599015,
+  "total_ms_p90": 46.14457000043331,
+  "inference_ms_median": 38.71914999990622,
+  "threads_seen": 8
+ }
+}
