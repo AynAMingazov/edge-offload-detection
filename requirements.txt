@@ -3,3 +3,5 @@ ultralytics>=8.4
 opencv-python
 numpy
 matplotlib
+openvino>=2026.4
+nncf>=3.4

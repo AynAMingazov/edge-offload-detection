@@ -2,49 +2,56 @@
 
 On board or at the roadside? Accuracy and latency of offloaded object detection for connected vehicles under frame compression and low light.
 
-This repository has the code and all raw measurements for the paper by A. Mingazov and A. Andrianova (Kazan Federal University, 2026). We compare a light YOLO model on a weak on-board computer with a heavier model on an edge server that receives a JPEG-compressed frame. Both daylight and simulated low light are tested.
+This repository has the code and all raw measurements for the paper by A. Mingazov and A. Andrianova (Kazan Federal University, 2026). A vehicle can run a light detector on its own computer or send a JPEG-compressed frame to a roadside unit with a heavier model. We measure what each choice costs in accuracy and latency, in daylight and in low light, with FP32 and INT8 models, on a CPU without a GPU.
 
 ## Setup
-- Data: the first 500 COCO val2017 images that contain a person or a car (1921 people, 294 cars). mAP@0.5:0.95 is computed for these two classes only.
-- Low light: the image goes to linear light, brightness is multiplied by 0.12 (about 3 stops), then signal-dependent Poisson-Gaussian noise is added. Fixed seed.
+- COCO: the first 500 val2017 images that contain a person or a car (1921 people, 294 cars), plus a simulated low-light copy (linear light, x0.12, Poisson-Gaussian noise, fixed seed).
+- ExDark: all 1096 test-split images with annotated people or cars (2235 people, 919 cars), real low-light photographs.
 - Transmitted frame: longer side 640, 480 or 320 px, JPEG quality 10 to 90 (OpenCV).
-- Models: YOLO11n, YOLOv8n, YOLO11s and YOLO11m (Ultralytics 8.4, COCO weights, no fine-tuning).
-- Hardware: AMD Ryzen 9 7940HS, 32 GB RAM, PyTorch 2.15 on CPU only. The on-board computer is emulated with 1 or 2 threads, the server with 8.
-- Latency: median full pipeline time per frame over 100 frames, after 10 warm-up frames. Offloading latency = encode + size / bandwidth + decode + server inference. Radio access delay and packet loss are not modelled.
+- Models: YOLO11n, YOLOv8n, YOLO11s, YOLO11m (Ultralytics 8.4, COCO weights, no fine-tuning). YOLO11n and YOLO11s also in OpenVINO FP32 and INT8 (NNCF post-training quantisation, 300 calibration images that are not in the test set).
+- Hardware: AMD Ryzen 9 7940HS, 32 GB RAM, CPU only. On-board computer emulated with 1 or 2 threads, roadside unit with 8.
+- Latency: median per frame over 100 frames after 10 warm-up frames. Offloading = encode + size / bandwidth + decode + inference on the unit. Radio access delay and packet loss are not modelled.
 
 ## Main results
+| Configuration | Latency, ms (20 Mbit/s, COCO / ExDark) | COCO day | ExDark (real low light) |
+|---|---|---|---|
+| On board: YOLO11n FP32, 1 thread | 64.4 | 0.441 | 0.384 |
+| On board: YOLO11n INT8, 1 thread | 30.7 | 0.434 | 0.382 |
+| On board: YOLO11s INT8, 2 threads | 40.6 | 0.500 | 0.420 |
+| Roadside: YOLO11s FP32, JPEG 70 | 64.2 / 53.7 | 0.493 | 0.390 |
+| Roadside: YOLO11s INT8, JPEG 70 | 42.5 / 32.0 | 0.474 | 0.389 |
+| Roadside: YOLO11m FP32, JPEG 90 | 188.5 / 169.8 | 0.557 | 0.439 |
 
-| | Day | Night (simulated) |
-|---|---|---|
-| YOLO11n on board, 640 px, raw frame | 0.441 | 0.332 |
-| YOLO11s on server, 640 px, JPEG 70 (about 47 / 38 KB) | 0.493 | 0.381 |
-| YOLO11m on server, 640 px, raw frame (upper bound) | 0.563 | 0.457 |
+- Low light reduces accuracy of every model by 19-26 % and makes JPEG compression about twice as harmful. On real ExDark images YOLO11m loses 10 % at quality 70 and 40 % at quality 30.
+- Under a limited uplink at night, reduce resolution, not quality: on ExDark, 320 px at quality 70 (7.4 KB) gives 0.336, while 640 px at quality 10 (7.0 KB) gives 0.056.
+- INT8 speeds the models up by 2.3-3.0 times and costs at most 0.015 mAP. Quantised YOLO11s on two on-board cores is more accurate than offloading the same model and does not depend on the link.
+- Offloading pays off only to a substantially heavier model (YOLO11m class), which needs an accelerator. An 8-thread CPU unit runs YOLO11s at about 23 fps in FP32 and 46 fps in INT8, enough for two or four vehicles at 10 fps.
 
-- Low light reduces accuracy of every model by 19-26 %.
-- Night frames are much more sensitive to JPEG: at quality 30, YOLO11m loses 17 % in daylight and 36 % at night. At quality 10 night detection collapses (mAP 0.038).
-- At night, a smaller frame with good JPEG quality is better than a large frame with poor quality: 320 px at quality 70 (8.6 KB) gives 0.316, while 640 px at quality 10 (7.3 KB) gives 0.038.
-- Server YOLO11s (8 threads) plus transmission is not slower than on-board YOLO11n with one thread when the uplink provides about 20 Mbit/s in daylight and 16 Mbit/s at night. An on-board computer with two threads is always faster in this configuration.
-- One 8-thread CPU server runs YOLO11s at about 23 frames per second, which is only two vehicles at 10 fps. A single roadside computer without an accelerator is not enough.
-
+![accuracy vs latency](fig/fig3_acc_vs_latency_en.png)
 ![accuracy vs frame size](fig/fig1_acc_vs_size_en.png)
 ![latency vs bandwidth](fig/fig2_latency_vs_bw_en.png)
 
 ## Files
-- `prep.py`: selects the images, builds the low-light copies and all JPEG variants, records sizes and encode / decode times.
-- `run_acc.py`: mAP for every model and variant (48 runs), results in `results/acc.json`.
-- `run_time.py <threads>`: latency for every model and input size, results in `results/time.json`.
-- `analyze.py`: tables, break-even bandwidth, figures; `results/summary.json`.
-- `results/frames.json`: average transmitted size and encode / decode time for every variant.
+- `prep.py`: COCO images, low-light copies, JPEG variants, sizes and encode / decode times.
+- `run_acc.py`, `run_time.py <threads>`: accuracy (48 runs) and latency of the PyTorch models.
+- `exdark.py prep <img_dir> <gt_dir> <imageclasslist.txt>` and `exdark.py acc`: ExDark test set and its 24 accuracy runs.
+- `quant.py calib | export | acc | time <threads>`: calibration set, OpenVINO FP32 / INT8 export, accuracy and latency.
+- `analyze.py`, `fig3.py`: tables, break-even bandwidth and figures.
+- `results/`: all raw measurements in JSON.
 
 ## Run
 ```
 pip install -r requirements.txt
-# download yolo11n.pt, yolov8n.pt, yolo11s.pt, yolo11m.pt from the Ultralytics releases into this folder
+# put yolo11n.pt, yolov8n.pt, yolo11s.pt, yolo11m.pt from the Ultralytics releases into this folder
 python prep.py
 python run_acc.py
 for t in 1 2 4 8; do python run_time.py $t; done
-python analyze.py
+python quant.py calib && python quant.py export && python quant.py acc
+for t in 1 2 4 8; do python quant.py time $t; done
+# ExDark: https://github.com/cs-chan/Exclusively-Dark-Image-Dataset (images and annotations)
+python exdark.py prep <ExDark images> <ExDark_Annno> <imageclasslist.txt> && python exdark.py acc
+python analyze.py && python fig3.py
 ```
 
 ## Limitations
-Night is simulated and COCO is not a driving dataset, so the numbers are useful for comparing configurations, not as absolute values for a car. The next step is real night driving data (BDD100K, ExDark), 4G/5G latency traces and cooperation between several vehicles and roadside units.
+ExDark is real low light but not a driving dataset, and the link is modelled only by bandwidth. Next steps: night driving data, 4G/5G latency traces, and cooperation between several vehicles and roadside units.

@@ -1,4 +1,6 @@
 data/
+data_exdark/
+ov/
 runs/
 venv/
 *.pt
