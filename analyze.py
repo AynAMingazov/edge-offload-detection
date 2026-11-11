@@ -78,7 +78,7 @@ for ax, cond, title in zip(axes, ("day", "night"), ("а) день", "б) ноч�
             ax.plot(xs, ys, ls, marker=mk, ms=3.5, color=col, lw=1,
                     label="%s, %d px" % (m.replace("yolo", "YOLO"), res) if cond == "day" else None)
     ax.axhline(acc("yolo11n", cond + "_raw", 640), color="gray", lw=1, ls="-.")
-    ax.text(4.3 if cond == "day" else 30, acc("yolo11n", cond + "_raw", 640) + (0.01 if cond == "day" else -0.04), "YOLO11n на борту, 640 px", fontsize=8, color="gray")
+    ax.text(4.3, acc("yolo11n", cond + "_raw", 640) + (0.01 if cond == "day" else -0.04), "YOLO11n на борту, 640 px", fontsize=8, color="gray")
     ax.set_xscale("log"); ax.set_xlim(4, 110)
     ax.xaxis.set_major_locator(matplotlib.ticker.FixedLocator([5, 10, 20, 50, 100]))
     ax.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d")); ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
@@ -92,13 +92,49 @@ fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig1_acc_vs_size.png"), dpi=3
 import numpy as np
 bw = np.linspace(2, 100, 200)
 fig, ax = plt.subplots(figsize=(6.2, 2.8))
-for m, res, q, col, lab in (("yolo11s", 640, 70, "#1f3864", "сервер: YOLO11s, 640 px, JPEG 70"),
-                             ("yolo11s", 480, 70, "#4a78b8", "сервер: YOLO11s, 480 px, JPEG 70"),
-                             ("yolo11m", 480, 70, "#b8562a", "сервер: YOLO11m, 480 px, JPEG 70")):
+for m, res, q, col, lab in (("yolo11s", 640, 70, "#1f3864", "узел: YOLO11s, 640 px, JPEG 70"),
+                             ("yolo11s", 480, 70, "#4a78b8", "узел: YOLO11s, 480 px, JPEG 70"),
+                             ("yolo11m", 480, 70, "#b8562a", "узел: YOLO11m, 480 px, JPEG 70")):
     ax.plot(bw, [e2e(m, "day", res, q, b) for b in bw], color=col, lw=1.3, label=lab)
 for th, ls in ((1, ":"), (2, "--")):
     ax.axhline(tm("yolo11n", 640, th), color="gray", ls=ls, lw=1, label="на борту: YOLO11n, 640 px, %d поток%s" % (th, "" if th == 1 else "а"))
 ax.set_ylim(0, 260); ax.set_xlabel("скорость канала машина-сервер, Мбит/с"); ax.set_ylabel("задержка на кадр, мс")
 ax.grid(alpha=0.3, lw=0.5); ax.legend(fontsize=7, frameon=False, loc="upper right")
 fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig2_latency_vs_bw.png"), dpi=300); plt.close(fig)
+print("figures ok")
+
+# Figure 1: accuracy vs transmitted size
+fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
+for ax, cond, title in zip(axes, ("day", "night"), ("(a) day", "(b) night (simulated)")):
+    for m, mk, col in (("yolo11s", "o", "#1f3864"), ("yolo11m", "s", "#b8562a")):
+        for res, ls in ((640, "-"), (480, "--"), (320, ":")):
+            qs = (10, 30, 50, 70, 90) if res == 640 else (30, 70)
+            xs = [kb("%s_r%d_q%d" % (cond, res, q)) for q in qs]
+            ys = [acc(m, "%s_r%d_q%d" % (cond, res, q), res) for q in qs]
+            ax.plot(xs, ys, ls, marker=mk, ms=3.5, color=col, lw=1,
+                    label="%s, %d px" % (m.replace("yolo", "YOLO"), res) if cond == "day" else None)
+    ax.axhline(acc("yolo11n", cond + "_raw", 640), color="gray", lw=1, ls="-.")
+    ax.text(4.3, acc("yolo11n", cond + "_raw", 640) + (0.01 if cond == "day" else -0.04), "YOLO11n on board, 640 px", fontsize=8, color="gray")
+    ax.set_xscale("log"); ax.set_xlim(4, 110)
+    ax.xaxis.set_major_locator(matplotlib.ticker.FixedLocator([5, 10, 20, 50, 100]))
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%d")); ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
+    ax.set_xlabel("frame size, KB (log scale)"); ax.set_title(title, fontsize=10)
+    ax.grid(alpha=0.3, which="both", lw=0.5)
+axes[0].set_ylabel("mAP@0.5:0.95")
+axes[0].legend(fontsize=7, loc="lower right", frameon=False)
+fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig1_acc_vs_size_en.png"), dpi=300); plt.close(fig)
+
+# Figure 2: end-to-end latency vs uplink
+import numpy as np
+bw = np.linspace(2, 100, 200)
+fig, ax = plt.subplots(figsize=(6.2, 2.8))
+for m, res, q, col, lab in (("yolo11s", 640, 70, "#1f3864", "roadside: YOLO11s, 640 px, JPEG 70"),
+                             ("yolo11s", 480, 70, "#4a78b8", "roadside: YOLO11s, 480 px, JPEG 70"),
+                             ("yolo11m", 480, 70, "#b8562a", "roadside: YOLO11m, 480 px, JPEG 70")):
+    ax.plot(bw, [e2e(m, "day", res, q, b) for b in bw], color=col, lw=1.3, label=lab)
+for th, ls in ((1, ":"), (2, "--")):
+    ax.axhline(tm("yolo11n", 640, th), color="gray", ls=ls, lw=1, label="on board: YOLO11n, 640 px, %d thread%s" % (th, "" if th == 1 else "s"))
+ax.set_ylim(0, 260); ax.set_xlabel("uplink bandwidth, Mbit/s"); ax.set_ylabel("latency per frame, ms")
+ax.grid(alpha=0.3, lw=0.5); ax.legend(fontsize=7, frameon=False, loc="upper right")
+fig.tight_layout(); fig.savefig(os.path.join(FIG, "fig2_latency_vs_bw_en.png"), dpi=300); plt.close(fig)
 print("figures ok")
