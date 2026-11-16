@@ -42,12 +42,12 @@ def calib():
     print("CALIB", len(chosen), "overlap with test:", len(test & {c[0] for c in chosen}))
 
 
-def yaml(variant):
+def yaml(variant, root=ROOT):
     from ultralytics import YOLO
     names = YOLO(os.path.join(HERE, "yolo11n.pt")).names
-    p = os.path.join(ROOT, variant + ".yaml")
+    p = os.path.join(root, variant + ".yaml")
     with open(p, "w", encoding="utf-8") as f:
-        f.write("path: %s\ntrain: %s/images\nval: %s/images\nnames:\n" % (ROOT.replace("\\", "/"), variant, variant))
+        f.write("path: %s\ntrain: %s/images\nval: %s/images\nnames:\n" % (root.replace("\\", "/"), variant, variant))
         for i in range(len(names)):
             f.write("  %d: %s\n" % (i, names[i]))
     return p
@@ -81,17 +81,23 @@ def acc():
     from ultralytics import YOLO
     OUT = os.path.join(HERE, "results", "acc_q.json")
     done = json.load(open(OUT)) if os.path.exists(OUT) else {}
+    EXDARK = os.path.join(HERE, "data_exdark")
     jobs = []
     for cond in ("day", "night"):
         for kind in ("fp32", "int8"):
-            jobs.append(("yolo11n", kind, cond + "_raw"))
-            jobs.append(("yolo11s", kind, cond + "_r640_q70"))
-    for m, kind, v in jobs:
-        key = "%s_%s|%s|640" % (m, kind, v)
+            jobs.append(("yolo11n", kind, cond + "_raw", ROOT, cond + "_raw"))
+            jobs.append(("yolo11s", kind, cond + "_raw", ROOT, cond + "_raw"))
+            jobs.append(("yolo11s", kind, cond + "_r640_q70", ROOT, cond + "_r640_q70"))
+    for kind in ("fp32", "int8"):
+        jobs.append(("yolo11n", kind, "exdark_raw", EXDARK, "raw"))
+        jobs.append(("yolo11s", kind, "exdark_raw", EXDARK, "raw"))
+    jobs.append(("yolo11s", "int8", "exdark_r640_q70", EXDARK, "r640_q70"))
+    for m, kind, label, root_dir, v in jobs:
+        key = "%s_%s|%s|640" % (m, kind, label)
         if key in done:
             continue
         r = YOLO(os.path.join(HERE, "ov", "%s_%s_openvino_model" % (m, kind)), task="detect").val(
-            data=yaml(v), imgsz=640, batch=1, device="cpu", classes=[0, 2], conf=0.001, iou=0.7, plots=False,
+            data=yaml(v, root_dir), imgsz=640, batch=1, device="cpu", classes=[0, 2], conf=0.001, iou=0.7, plots=False,
             verbose=False, workers=0, project=os.path.join(HERE, "runs"), name="q", exist_ok=True)
         done[key] = {"map": float(r.box.map), "map50": float(r.box.map50), "recall": float(r.box.mr)}
         json.dump(done, open(OUT, "w"), indent=1)

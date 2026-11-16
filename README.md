@@ -1,50 +1,49 @@
 # edge-offload-detection
 
-Distributing video processing between the vehicle and road infrastructure in an intelligent transport system (ITS).
+Cooperative computer vision in road infrastructure: evaluating on-board and server-side video processing.
 
-This repository has the code and all raw measurements for the paper by A. Mingazov and A. Andrianova (Kazan Federal University, 2026). A vehicle can run a light detector on its own computer or send a JPEG-compressed frame to a roadside unit with a heavier model. We measure what each choice costs in accuracy and latency, in daylight and in low light, with FP32 and INT8 models, on a CPU without a GPU.
+This repository contains the experiment scripts and all 163 raw measurement records for the paper by A. A. Mingazov and A. A. Andrianova (Kazan Federal University, 2026). In road monitoring and intelligent transport systems (ITS), video from an edge/on-board camera can be processed locally on a CPU or compressed as JPEG and sent to a roadside server running a heavier model. We measure what each option costs in detection accuracy (mAP), latency, missed pedestrians and false alarms across original COCO, synthetically darkened COCO, and real low-light ExDark scenes in FP32 and INT8 on a CPU without a GPU.
 
 ## Setup
-- COCO: the first 500 val2017 images that contain a person or a car (1921 people, 294 cars), plus a simulated low-light copy (linear light, x0.12, Poisson-Gaussian noise, fixed seed).
+- COCO: the first 500 val2017 images containing a person or a car (1921 people, 294 cars), plus a synthetically darkened copy (linear light x0.12, Poisson-Gaussian sensor noise, fixed seed).
 - ExDark: all 1096 test-split images with annotated people or cars (2235 people, 919 cars), real low-light photographs.
-- Transmitted frame: longer side 640, 480 or 320 px, JPEG quality 10 to 90 (OpenCV).
-- Models: YOLO11n, YOLOv8n, YOLO11s, YOLO11m (Ultralytics 8.4, COCO weights, no fine-tuning). YOLO11n and YOLO11s also in OpenVINO FP32 and INT8 (NNCF post-training quantisation, 300 calibration images that are not in the test set).
-- Hardware: AMD Ryzen 9 7940HS, 32 GB RAM, CPU only. On-board computer emulated with 1 or 2 threads, roadside unit with 8.
-- Latency: median per frame over 100 frames after 10 warm-up frames. Offloading = encode + size / bandwidth + decode + inference on the unit. Radio access delay and packet loss are not modelled.
+- Transmitted frame: longer side 640, 480 or 320 px, JPEG quality 10 to 90 (OpenCV, 9 settings).
+- Models: YOLO11n, YOLOv8n, YOLO11s, YOLO11m (Ultralytics 8.4, COCO weights, no fine-tuning). YOLO11n and YOLO11s are also exported to OpenVINO FP32 and INT8 (NNCF post-training quantisation, 300 disjoint calibration images).
+- Hardware: AMD Ryzen 9 7940HS, 32 GB RAM, CPU only. Local endpoint emulated with 1 or 2 threads, server node with 8 threads.
+- Latency: median per frame over 100 frames after 10 warm-up frames. Server offloading latency is modelled as `L = t_encode + 8*S/B + t_decode + t_process`.
 
 ## Main results
-| Configuration | Latency, ms (20 Mbit/s, COCO / ExDark) | COCO day | ExDark (real low light) |
+| Configuration | Latency, ms (20 Mbit/s, COCO / ExDark) | COCO original | ExDark (real low light) |
 |---|---|---|---|
-| On board: YOLO11n FP32, 1 thread | 64.4 | 0.441 | 0.384 |
-| On board: YOLO11n INT8, 1 thread | 30.7 | 0.434 | 0.382 |
-| On board: YOLO11s INT8, 2 threads | 40.6 | 0.500 | 0.420 |
-| Roadside: YOLO11s FP32, JPEG 70 | 64.2 / 53.7 | 0.493 | 0.390 |
-| Roadside: YOLO11s INT8, JPEG 70 | 42.5 / 32.0 | 0.474 | 0.389 |
-| Roadside: YOLO11m FP32, JPEG 90 | 188.5 / 169.8 | 0.557 | 0.439 |
+| Local: YOLO11n FP32, 1 thread | 64.4 | 0.441 | 0.384 |
+| Local: YOLO11n INT8, 1 thread | 30.7 | 0.434 | 0.382 |
+| Local: YOLO11s INT8, 2 threads | 40.6 | 0.500 | 0.420 |
+| Server: YOLO11s FP32, JPEG 70 | 64.2 / 53.7 | 0.493 | 0.390 |
+| Server: YOLO11s INT8, JPEG 70 | 42.5 / 32.0 | 0.474 | 0.389 |
+| Server: YOLO11m FP32, JPEG 90 | 188.5 / 169.8 | 0.557 | 0.439 |
 
-- Low light reduces accuracy of every model by 19-26 % and makes JPEG compression about twice as harmful. On real ExDark images YOLO11m loses 10 % at quality 70 and 40 % at quality 30.
-- Under a limited uplink at night, reduce resolution, not quality: on ExDark, 320 px at quality 70 (7.4 KB) gives 0.336, while 640 px at quality 10 (7.0 KB) gives 0.056.
-- INT8 speeds the models up by 2.3-3.0 times and costs at most 0.015 mAP. Quantised YOLO11s on two on-board cores is more accurate than offloading the same model and does not depend on the link.
-- Missed pedestrians (confidence 0.25, IoU 0.5) on real dark images: on-board YOLO11n 33.7 %, roadside YOLO11s at JPEG 70 34.5 %, roadside YOLO11m at JPEG 90 27.7 %, quantised on-board YOLO11s 25.9 %. Far pedestrians (box below 64 px) are missed two to three times more often than near ones.
-- Offloading pays off only to a substantially heavier model (YOLO11m class), which needs an accelerator. An 8-thread CPU unit runs YOLO11s at about 23 fps in FP32 and 46 fps in INT8, enough for two or four vehicles at 10 fps.
+- Low light reduces baseline detection accuracy by 19-26% and makes JPEG compression roughly twice as destructive. On real ExDark images YOLO11m loses 10% mAP at quality 70 and 40% at quality 30.
+- Under a constrained uplink in dark scenes, reduce resolution, not JPEG quality: on ExDark, 320 px at quality 70 (7.4 KB) achieves 0.336 mAP, whereas 640 px at quality 10 (7.0 KB) drops to 0.056.
+- OpenVINO INT8 quantisation speeds up single-thread inference by 2.29-2.95x with at most 0.015 mAP loss. Two-thread local YOLO11s INT8 (40.6 ms) outperforms compressed-frame offloading in both accuracy and latency without relying on the network link.
+- Missed pedestrians (confidence 0.25, IoU >= 0.5) on ExDark: local YOLO11n FP32 misses 33.7% (TP 1482, FP 378, FN 753; Precision 79.68%, Recall 66.31%), server YOLO11s at JPEG 70 misses 34.5%, server YOLO11m at JPEG 90 misses 27.7%, and local YOLO11s INT8 misses 25.9% (TP 1657, FP 524, FN 578; Precision 75.97%, Recall 74.14%). Small bounding boxes (<64 px) are missed over 50% of the time from a single camera, motivating multi-camera cooperative perception.
 
 ![accuracy vs latency](fig/fig3_acc_vs_latency_en.png)
 ![accuracy vs frame size](fig/fig1_acc_vs_size_en.png)
 ![latency vs bandwidth](fig/fig2_latency_vs_bw_en.png)
 
 ## Files
-- `prep.py`: COCO images, low-light copies, JPEG variants, sizes and encode / decode times.
-- `run_acc.py`, `run_time.py <threads>`: accuracy (48 runs) and latency of the PyTorch models.
+- `prep.py`: COCO images, low-light copies, JPEG variants, file sizes and encode/decode times.
+- `run_acc.py`, `run_time.py <threads>`: accuracy (48 runs) and latency (40 runs) of the PyTorch models.
 - `exdark.py prep <img_dir> <gt_dir> <imageclasslist.txt>` and `exdark.py acc`: ExDark test set and its 24 accuracy runs.
-- `quant.py calib | export | acc | time <threads>`: calibration set, OpenVINO FP32 / INT8 export, accuracy and latency.
-- `miss.py`: share of missed pedestrians and cars by object size, `results/miss.json`.
-- `analyze.py`, `fig3.py`: tables, break-even bandwidth and figures.
-- `results/`: all raw measurements in JSON.
+- `quant.py calib | export | acc | time <threads>`: calibration set, OpenVINO FP32/INT8 export, 17 accuracy runs and 16 latency runs.
+- `miss.py`: missed pedestrians, false positives, and breakdown by box height (<64 px vs >=64 px), `results/miss.json` (18 runs).
+- `analyze.py`, `fig3.py`: summary tables, break-even bandwidth and figures.
+- `results/`: all 163 raw configuration records in JSON.
 
 ## Run
 ```
 pip install -r requirements.txt
-# put yolo11n.pt, yolov8n.pt, yolo11s.pt, yolo11m.pt from the Ultralytics releases into this folder
+# put yolo11n.pt, yolov8n.pt, yolo11s.pt, yolo11m.pt from Ultralytics releases into this folder
 python prep.py
 python run_acc.py
 for t in 1 2 4 8; do python run_time.py $t; done
@@ -54,6 +53,3 @@ for t in 1 2 4 8; do python quant.py time $t; done
 python exdark.py prep <ExDark images> <ExDark_Annno> <imageclasslist.txt> && python exdark.py acc
 python analyze.py && python fig3.py && python miss.py
 ```
-
-## Limitations
-ExDark is real low light but not a driving dataset, and the link is modelled only by bandwidth. Next steps: night driving data, 4G/5G latency traces, and cooperation between several vehicles and roadside units.
